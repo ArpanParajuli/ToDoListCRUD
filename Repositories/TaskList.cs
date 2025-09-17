@@ -18,11 +18,11 @@ namespace ToDoListCRUD.Repositories
             this.appDbContext = appDbContext;
         }
 
-        public async Task<IEnumerable<ReadTaskRes>> GetAllTask(ReadTaskReq readTaskReq)
+        public async Task<IEnumerable<ReadTaskRes>> GetAllTask(int UserId)
         {
             var AllTask = await appDbContext.TaskLists
                 .AsNoTracking() // performance readonly db no track
-                .Where(t => t.UserId == readTaskReq.UserId)
+                .Where(t => t.UserId == UserId)
                 .Select(t => new ReadTaskRes
                {
                  Id = t.Id,
@@ -53,11 +53,11 @@ namespace ToDoListCRUD.Repositories
         }
 
 
-        public async Task AddTaskList(AddTaskReq addTaskReq)
+        public async Task AddTaskList(int UserIdFromJwt , AddTaskReq addTaskReq)
         {
             var TaskData = new Models.TaskList
             {
-                UserId = addTaskReq.UserId,
+                UserId = UserIdFromJwt,
                 Name = addTaskReq.Name,
                 Description = addTaskReq.Description
             };

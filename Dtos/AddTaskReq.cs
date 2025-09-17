@@ -4,8 +4,8 @@ namespace ToDoListCRUD.Dtos
 {
     public class AddTaskReq
     {
-        [Required]
-        public int UserId { get; set; }
+        //[Required]
+        //public int UserId { get; set; }
 
         [Required]
         [StringLength(maximumLength: 25, MinimumLength = 3)]

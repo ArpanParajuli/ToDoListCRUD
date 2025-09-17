@@ -18,7 +18,7 @@ namespace ToDoListCRUD.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [StringLength(maximumLength: 20)]
+        [StringLength(maximumLength: 255)] // bcrypt le garda
         public string Password { get; set; } = string.Empty; // for scaling to use auth
 
 

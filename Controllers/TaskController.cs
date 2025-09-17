@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDoListCRUD.Dtos;
 using ToDoListCRUD.Repositories;
@@ -8,6 +10,8 @@ namespace ToDoListCRUD.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    [Authorize]
     public class TaskController : ControllerBase
     {
         private readonly ITaskList taskList;
@@ -23,8 +27,9 @@ namespace ToDoListCRUD.Controllers
             {
                 return BadRequest();
             }
+            var UserId = int.Parse(User.FindFirstValue(ClaimTypes.Role));
 
-            var CheckUserExits = await taskList.FindUserById(readTaskReq.UserId);
+            var CheckUserExits = await taskList.FindUserById(UserId);
 
             if(CheckUserExits == false)
             {
@@ -33,7 +38,7 @@ namespace ToDoListCRUD.Controllers
 
             else
             {
-                var TaskResponse = await taskList.GetAllTask(readTaskReq);
+                var TaskResponse = await taskList.GetAllTask(UserId);
 
                 if(TaskResponse == null)
                 {
@@ -59,9 +64,11 @@ namespace ToDoListCRUD.Controllers
                 return BadRequest();
             }
 
+            var UserId = int.Parse(User.FindFirstValue(ClaimTypes.Role));
+
             try
             {
-                await taskList.AddTaskList(addTaskReq);
+                await taskList.AddTaskList(UserId, addTaskReq);
                 return Ok($"{addTaskReq.Name} Task Added!");
             }
 
@@ -75,25 +82,25 @@ namespace ToDoListCRUD.Controllers
 
 
         [HttpDelete("remove")]
-        public async Task<IActionResult> Remove(DelTaskReq delTaskReq)
+        public async Task<IActionResult> Remove()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-
+            var UserId = int.Parse(User.FindFirstValue(ClaimTypes.Role));
             try
             {
 
-                var IsUserExists = await taskList.FindUserById(delTaskReq.UserId);
+                var IsUserExists = await taskList.FindUserById(UserId);
 
                 if (IsUserExists == false)
                 {
                     return NotFound("User not found");
                 }
 
-                await taskList.DeleteAllTaskById(delTaskReq.UserId);
+                await taskList.DeleteAllTaskById(UserId);
                 return Ok("Remove method");
             }
 
