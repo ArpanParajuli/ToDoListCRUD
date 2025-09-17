@@ -35,4 +35,26 @@ PATCH /api/task/update/ (Haven't added)
 
 
 
+
+POST /api/authuser/login
+
+{
+    "email" : "arpandev12@gmail.com",
+    "password": "arpandev12@"
+}
+
+
+POST /api/authuser/register
+
+
+{
+    "name" : "arpandev12",
+    "email" : "arpandev12@gmail.com",
+    "password": "arpandev12@"
+}
+
+
+
 # Other improvement will be in next push update
+
+- Added JWT auth
